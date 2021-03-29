@@ -13,7 +13,10 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 import { WeatherService } from './services/weather.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ConverterGradesPipe } from './utils/converter-grades.pipe';
-
+import { StoreModule } from '@ngrx/store';
+import { calendarReducer } from './store/calendar.reducer';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,6 +33,11 @@ import { ConverterGradesPipe } from './utils/converter-grades.pipe';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    StoreModule.forRoot({ calendar: calendarReducer }, {}),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
   ],
   providers: [WeatherService],
   bootstrap: [AppComponent],

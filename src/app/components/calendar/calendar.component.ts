@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { ReminderCalendarComponent } from '../reminder-calendar/reminder-calendar.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { increment, getCalendar, reset } from 'src/app/store/calendar.action';
 
 const DAY_MS = 60 * 60 * 24 * 1000;
 
@@ -18,17 +21,28 @@ export class CalendarComponent {
   selectedDate = new Date();
   remindersCalendar = [];
   panelOpenState = false;
+  calendar$: Observable<[]>;
 
   @Output() selected = new EventEmitter();
 
-  constructor(public dialog: MatDialog) {
+  constructor(
+    public dialog: MatDialog,
+    private store: Store<{ calendar: [] }>
+  ) {
+    this.calendar$ = store.select('calendar');
+
     this.buildCalendar();
-    console.log('uuidv4()', uuidv4());
+    console.log('calendar$', this.calendar$);
+  }
+
+  decrement() {
+    this.store.dispatch(getCalendar({ listDays: this.remindersCalendar }));
   }
 
   buildCalendar() {
     this.dates = this.getCalendarDays(this.date);
     this.buildArrayReminder(this.dates);
+    this.decrement();
     console.log('reminderArray', this.remindersCalendar);
   }
 
@@ -42,7 +56,7 @@ export class CalendarComponent {
       this.remindersCalendar.push({
         id: this.createIdDay(day),
         dayDate: day,
-        dayReminders: new Array(),
+        dayReminders: [],
       });
     });
   }
@@ -51,6 +65,7 @@ export class CalendarComponent {
   enterReminderInDay(resultReminder) {
     this.remindersCalendar.map((x) => {
       if (x.id === resultReminder.idDate) {
+        console.log('array dia', x, 'data a guardar', resultReminder);
         x.dayReminders.push({
           idArray: uuidv4(),
           idDate: resultReminder.idDate,
