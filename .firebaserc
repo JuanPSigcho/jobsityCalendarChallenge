@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "calendarchallengejp": {
+      "hosting": {
+        "jobsityChallenge": [
+          "calendarchallengejp"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "calendarchallengejp"
+  }
+}
